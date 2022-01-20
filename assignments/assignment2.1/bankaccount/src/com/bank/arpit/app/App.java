@@ -1,8 +1,8 @@
-package app;
+package com.bank.arpit.app;
 
 import java.util.Scanner;
 
-import com.bank.abc.BankAccount;
+import com.bank.arpit.service.BankAccount;
 
 public class App {
 	public static void main(String []args) {
@@ -15,13 +15,15 @@ public class App {
 		int balance = sc.nextInt();
 		sc.close();
 		
-		BankAccount b = new BankAccount();
+		BankAccount b = new BankAccount(name, accNumber, password, interestRate, balance);
 		
 		b.setName(name);
 		b.setAccNumber(accNumber);
 		b.setPassword(password);
 		b.setInterestRate(interestRate);
 		b.setBalance(balance);
+		b.deposit(100);
+		b.withdraw(700, "xyz");
 		System.out.println(b.getName() + " " + b.getAccNumber() + " " + b.getPassword() + " " + b.getInterestRate() + " " + b.getBalance());
 	}
 }

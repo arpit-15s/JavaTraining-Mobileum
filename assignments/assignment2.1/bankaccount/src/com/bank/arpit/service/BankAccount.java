@@ -1,24 +1,32 @@
-package com.bank.abc;
+package com.bank.arpit.service;
 
 public class BankAccount {
 	private String name, accNumber, password;
 	private int interestRate, balance;
+	
+	public BankAccount(String name, String accNumber, String password, int interestRate, int balance){
+		this.name = name;
+		this.accNumber = accNumber;
+		this.password = password;
+		this.interestRate = interestRate;
+		this.balance = balance;
+	}
 
 	
 	public int deposit(int amount) {
 		if(amount <= 0) {
 			System.out.println("Kindly enter amount greater than 0");
 		}
-		else this.balance += amount;
-		return this.balance;
+		else setBalance(this.balance + amount);
+		return getBalance();
 	}
 	
 	public int withdraw(int amount, String password) {
 		if((this.password != password) || (amount <= 0) || (amount > this.balance)) {
 			System.out.println("Invalid Entry, Try Again");
 		}
-		else this.balance -= amount;
-		return this.balance;
+		else setBalance(this.balance - amount);
+		return getBalance();
 	}
 
 	public String getName() {
@@ -60,8 +68,5 @@ public class BankAccount {
 	public void setBalance(int balance) {
 		this.balance = balance;
 	}
-	
-	
-	
 	
 };
