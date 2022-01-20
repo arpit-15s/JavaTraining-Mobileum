@@ -1,0 +1,18 @@
+package app;
+
+import java.util.Scanner;
+
+import com.bank.abc.BankAccount;
+
+public class App {
+	public static void main(String []args) {
+		
+		Scanner sc = new Scanner(System.in);
+		String name = sc.nextLine();
+		sc.close();
+		
+		BankAccount b = new BankAccount();
+		b.setName(name);
+		System.out.println(b.getName());
+	}
+}
