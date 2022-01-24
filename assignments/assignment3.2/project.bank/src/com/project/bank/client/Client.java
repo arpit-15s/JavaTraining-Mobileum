@@ -5,7 +5,7 @@ import java.util.Scanner;
 import com.project.bank.service.Bank;
 import com.project.bank.service.Response;
 
-public class ATM {
+public class Client {
 	public void operations() {
 		int number = 123466789;
 		
