@@ -59,7 +59,7 @@ public class ATM {
 		while(choice != 5) {
 			System.out.println("Enter any of the one choice");
 			System.out
-					.println("1. Balance Enquiry \n" + "2. Cash Withdrawal \n" + "3. Pin Change \n" + "4. Cash Deposit \n" + "5. Clear Transaction");
+					.println("1. Balance Enquiry \n" + "2. Cash Withdrawal \n" + "3. Pin Change \n" + "4. Cash Deposit \n" + "5. Transfer");
 			
 			
 			
@@ -102,7 +102,21 @@ public class ATM {
 					System.out.println("Amount added Successfully");
 				else 
 					System.out.println("Try Again");
+			
+			case 5:
+				System.out.println("Enter account number and amount to be transferred");
+				sc.next();
+				int accnumber2 = sc.nextInt();
+				int amount3 = sc.nextInt();
+				server.transfer(accNumber, accnumber2, password, amount3);
+				System.out.println("Amount transferred Successfully");
+				
 			}
+				
+			
+			System.out.println("Enter 0 to end and any other number to continue");
+			int choices = sc.nextInt();
+			if(choices == 0) break;
 		}
 		
 		System.out.println("--------------------------------");
