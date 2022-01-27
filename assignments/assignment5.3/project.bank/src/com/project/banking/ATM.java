@@ -21,8 +21,16 @@ public class ATM {
 		//A secret menu
 		if(accountNumber==-1 && password.equals("NIMDA"))
 			adminMenu();
-		else
-			mainMenu();
+		else {
+			if(bank.validate(accountNumber))
+				mainMenu();
+			else {
+				System.out.println("Enter correct credentials");
+				start();
+			}
+				
+		}
+			
 	}
 	
 	
