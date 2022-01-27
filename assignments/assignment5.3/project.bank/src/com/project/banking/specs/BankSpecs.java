@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
+import com.project.banking.ResponseStatus;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -26,8 +28,8 @@ public class BankSpecs {
 	public void arrange() {
 		//ARRANGE
 		bank=new Bank(bankName,rate);
-		existingAccount1=bank.openAccount("Name1", correctPassword, initialBalance);
-		existingAccount2=bank.openAccount("Name", correctPassword, initialBalance);
+		existingAccount1=bank.openAccount("Name1", correctPassword, initialBalance, 2);
+		existingAccount2=bank.openAccount("Name", correctPassword, initialBalance, 2);
 		initialTotalAccounts=bank.getAccountCount();
 	}
 	
@@ -60,7 +62,7 @@ public class BankSpecs {
 	public void openAccountShouldTakeNamePasswordAndBalanceAndReturnAccountNumber() {
 		
 		//ACT
-		int accountNumber1 = bank.openAccount("Aman", "mypassword", 1000.0);
+		int accountNumber1 = bank.openAccount("Aman", "mypassword", 1000.0, 2);
 		
 		// ASSERT
 		assertTrue(accountNumber1 > 0);
@@ -72,8 +74,8 @@ public class BankSpecs {
 		
 		
 		// ACT 
-		var accountNumber1 = bank.openAccount("aman", "mypassword", 1000.0 );
-		var accountNumber2 = bank.openAccount("arpit", "hispassword", 2000.0 );
+		var accountNumber1 = bank.openAccount("aman", "mypassword", 1000.0, 2 );
+		var accountNumber2 = bank.openAccount("arpit", "hispassword", 2000.0 , 2);
 		
 		// ASSERT
 		assertNotEquals(accountNumber1, accountNumber2);
@@ -85,7 +87,7 @@ public class BankSpecs {
 		
 		
 		// ACT 
-		var accountNumber1 = bank.openAccount("aman", "mypassword", 1000.0 );
+		var accountNumber1 = bank.openAccount("aman", "mypassword", 1000.0, 2 );
 		
 		
 		// ASSERT
@@ -126,7 +128,7 @@ public class BankSpecs {
 	}
 	
 	
-	@Ignore
+
 	@Test
 	public void closeAccountShouldReturnBalanceOnSuccessfulClosure() {
 		
@@ -167,133 +169,244 @@ public class BankSpecs {
 		//ARRANGE
 		String a4Name="Account 4";
 		String a5Name="Account 5";
-		bank.openAccount("Name", correctPassword, initialBalance); //3
-		bank.openAccount(a4Name, correctPassword, initialBalance); //4
+		bank.openAccount("Name", correctPassword, initialBalance, 2); //3
+		bank.openAccount(a4Name, correctPassword, initialBalance, 2); //4
 		
 		bank.closeAccount(3, correctPassword); //we closed account 3
 		
 		//ACT
-		
-		var accountNumber= bank.openAccount(a5Name, correctPassword, initialBalance);
-		
+		var accountNumber= bank.openAccount(a5Name, correctPassword, initialBalance, 2);
+		var account4= bank.getAccount(4,correctPassword);
 		
 		//ASSERT
 		assertEquals(5,accountNumber);
-		
-		var account4= bank.getAccount(4,correctPassword);
-		
-		assertEquals(a4Name, account4.getName());
-		
-		
-		
-		
+		assertEquals(a4Name, account4.getName());	
 		
 	}
 	
 	
 	
-	@Ignore
 	@Test
 	public void weShouldNotBeAbleToGetClosedAccount() {
+		String a3Name="Account 3";
+		String a4Name="Account 4";
+		bank.openAccount(a3Name, correctPassword, initialBalance, 2); //3
+		bank.openAccount(a4Name, correctPassword, initialBalance, 2);
+		bank.closeAccount(3, correctPassword);
+		
+		var account3 = bank.getAccount(3, correctPassword);
+//		System.out.println(num);
+		assertNull(account3);
 		
 	}
 	
-	@Ignore
 	@Test
 	public void creditInterstShouldCreditInterstToAllAccounts() {
+		String a3Name="Account 3";
+		bank.openAccount(a3Name, correctPassword, initialBalance, 2);
+
+		bank.creditInterest();
+		var balance3 = bank.getBalance(3, correctPassword);
 		
+		assertNotEquals(initialBalance, balance3);
 	}
 	
-	@Ignore
 	@Test
 	public void getBalanceShouldReturnBalanceForCorrectAccountAndPassword() {
+		String a3Name="Account 3";
+		bank.openAccount(a3Name, correctPassword, initialBalance, 2);
+		bank.closeAccount(3, correctPassword);
 		
-	}
-	@Ignore
-	@Test
-	public void getBalanceShouldFailForInvalidAccountNumber() {
+		var balance3 = bank.getBalance(3, correctPassword);
 		
-	}
-	@Ignore
-	@Test
-	public void getBalanceShouldFailForInvalidPassword() {
-		
-	}
-	@Ignore
-	@Test
-	public void depositShouldFailForInvalidAccountNumber() {
-		
-	}
-	@Ignore
-	@Test
-	public void depositShouldFailForInvalidAmount() {
-		
-	}
-	@Ignore
-	@Test
-	public void depositShouldCreditBalanceOnSuccess() {
-		
-	}
-	@Ignore
-	@Test
-	public void withdrawShouldFailForInvalidAccountNumber() {
-		
-	}
-	@Ignore
-	@Test
-	public void withdrawShouldFailForInvalidPassword() {
-		
-	}
-	@Ignore
-	@Test
-	public void withdrawShouldFailForInvalidAmount() {
-		
-	}
-	@Ignore
-	@Test
-	public void withdrawShouldFailForOverDraft() {
-		
-	}
-	@Ignore
-	@Test
-	public void withdrawShouldReduceBalanceByAmountOnSuccess() {
-		
+		assertEquals(-1, balance3, 0.0001);
 	}
 	
-	@Ignore
+	@Test
+	public void getBalanceShouldFailForInvalidAccountNumber() {
+		String a3Name="Account 3";
+		bank.openAccount(a3Name, correctPassword, initialBalance, 2);
+
+		
+		var balance4 = bank.getBalance(4, correctPassword);
+		
+		assertEquals(-1, balance4, 0.001);
+	}
+	
+	@Test
+	public void getBalanceShouldFailForInvalidPassword() {
+		String a3Name="Account 3";
+		bank.openAccount(a3Name, correctPassword, initialBalance, 2);
+
+		
+		var balance3 = bank.getBalance(3, "password");
+		
+		assertEquals(-1, balance3, 0.001);
+	}
+	
+	@Test
+	public void depositShouldFailForInvalidAccountNumber() {
+		String a3Name="Account 3";
+		String a4Name="Account 4";
+		int amount = 1000;
+		bank.openAccount(a3Name, correctPassword, initialBalance, 2); //3
+		bank.openAccount(a4Name, correctPassword, initialBalance, 2);
+		bank.closeAccount(3, correctPassword);
+		
+		var result = bank.deposit(3, amount);
+
+		assertFalse(result);
+	}
+
+	@Test
+	public void depositShouldFailForInvalidAmount() {
+		String a3Name="Account 3";
+		int amount = -1000;
+		bank.openAccount(a3Name, correctPassword, initialBalance, 2); //3
+		
+		var result = bank.deposit(3, amount);
+
+		assertFalse(result);
+	}
+	
+	@Test
+	public void depositShouldCreditBalanceOnSuccess() {
+		String a3Name="Account 3";
+		int amount = 1000;
+		bank.openAccount(a3Name, correctPassword, initialBalance, 2); //3
+		
+		var result = bank.deposit(3, amount);
+
+		assertTrue(result);
+	}
+	
+	@Test
+	public void withdrawShouldFailForInvalidAccountNumber() {
+		String a3Name="Account 3";
+		bank.openAccount(a3Name, correctPassword, initialBalance, 2); //3
+		
+		bank.closeAccount(3, correctPassword);
+		int amount = 1000;
+		var result = bank.withdraw(3, amount, correctPassword);
+
+		assertEquals(ResponseStatus.INVALID_CREDENTIALS, result.getCode());
+	}
+	
+	@Test
+	public void withdrawShouldFailForInvalidPassword() {
+		String a3Name="Account 3";
+		bank.openAccount(a3Name, correctPassword, initialBalance, 2); //3
+		int amount = 1000;
+		var result = bank.withdraw(3, amount, "password");
+
+		assertEquals(ResponseStatus.INVALID_CREDENTIALS, result.getCode());
+	}
+	
+	@Test
+	public void withdrawShouldFailForInvalidAmount() {
+		String a3Name="Account 3";
+		bank.openAccount(a3Name, correctPassword, initialBalance, 2); //3
+		int amount1 = 0, amount2 = -100;
+		var result1 = bank.withdraw(3, amount1, correctPassword);
+		var result3 = bank.withdraw(3, amount2, correctPassword);
+
+		assertEquals(ResponseStatus.INVALID_AMOUNT, result1.getCode());
+		assertEquals(ResponseStatus.INVALID_AMOUNT, result3.getCode());
+	}
+	
+	@Test
+	public void withdrawShouldFailForOverDraft() {
+		String a3Name="Account 3";
+		bank.openAccount(a3Name, correctPassword, initialBalance, 2); //3
+		double amount = initialBalance + 1000;
+		
+		var result2 = bank.withdraw(3, amount, correctPassword);
+		
+		assertEquals(ResponseStatus.INSUFFICIENT_FUNDS, result2.getCode());
+	}
+	
+	@Test
+	public void withdrawShouldReduceBalanceByAmountOnSuccess() {
+		String a3Name="Account 3";
+		bank.openAccount(a3Name, correctPassword, initialBalance, 2); //3
+		int amount = 1000;
+		
+		bank.withdraw(3, amount, correctPassword);
+		
+		var result = bank.getBalance(3, correctPassword);
+		
+		assertEquals(initialBalance - amount, result, 0.0001);
+
+	}
+	
 	@Test
 	public void transferShouldFailForInvalidSourceAccountNumber() {
 		
+		int amount = 1000;
+		var result = bank.transfer(-1, amount, correctPassword, existingAccount2);
+	
+		assertEquals(ResponseStatus.INVALID_CREDENTIALS, result.getCode());
 	}
-	@Ignore
+
 	@Test
 	public void transferShouldFailForInvalidPassword() {
-		
+		int amount = 1000;
+		String wrongPass = "password";
+		var result = bank.transfer(existingAccount1, amount, wrongPass, existingAccount2);
+	
+		assertEquals(ResponseStatus.INVALID_CREDENTIALS, result.getCode());
 	}
-	@Ignore
+	
 	@Test
 	public void transferShouldFailForInvalidAmount() {
-		
+		int amount1 = -1, amount2 = 0;
+		var result1 = bank.transfer(existingAccount1, amount1, correctPassword, existingAccount2);
+		var result2 = bank.transfer(existingAccount1, amount2, correctPassword, existingAccount2);
+	
+		assertEquals(ResponseStatus.INVALID_AMOUNT, result1.getCode());
+		assertEquals(ResponseStatus.INVALID_AMOUNT, result2.getCode());
 	}
-	@Ignore
+	
 	@Test
 	public void transferShouldFailForOverDraft() {
+		String a3Name="Account 3";
+		bank.openAccount(a3Name, correctPassword, initialBalance, 2); //3
+		int amount = (int)initialBalance + 1000;
 		
+		var result2 = bank.transfer(3, amount, correctPassword, existingAccount2);
+		
+		assertEquals(ResponseStatus.INSUFFICIENT_FUNDS, result2.getCode());
 	}
-	@Ignore
+	
 	@Test
 	public void transferShouldReduceBalanceInSourceAccountOnSuccess() {
 		
+		int amount = 1000;
+		
+		bank.transfer(existingAccount1, amount, correctPassword, existingAccount2);
+		
+		var result = bank.getBalance(existingAccount1, correctPassword);
+		
+		assertEquals(initialBalance - amount, result, 0.0001);
 	}
-	@Ignore
+	
 	@Test
 	public void transferShouldFailForInvalidTargetAccountNumber() {
-		
+		int amount = 1000;
+		var result = bank.transfer(existingAccount1, amount, correctPassword, -1);
+	
+		assertEquals(ResponseStatus.INVALID_CREDENTIALS, result.getCode());
 	}
-	@Ignore
+
 	@Test
 	public void transferShouldAddBalanceInTargetOnSuccess() {
+		int amount = 1000;
 		
+		bank.transfer(existingAccount1, amount, correctPassword, existingAccount2);
+		
+		var result = bank.getBalance(existingAccount2, correctPassword);
+		
+		assertEquals(initialBalance + amount, result, 0.0001);
 	}
 	
 	

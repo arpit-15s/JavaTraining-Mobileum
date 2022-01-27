@@ -68,7 +68,7 @@ public class ATM {
 	private void mainMenu() {
 		
 		while(true) {
-			var choice=keyboard.readInt("1. deposit 2. withdraw 3. check balance 4. transfer 5. close account 0. exit ?");
+			var choice=keyboard.readInt("1. deposit 2. withdraw 3. check balance 4. transfer 5. close account 6. Return to Start Menu 0. exit ?");
 			switch(choice) {
 			case 1:
 				doDeposit();

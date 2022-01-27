@@ -115,7 +115,7 @@ public class Bank {
 	
 	public boolean validate(int accNumber) {
 		for(int i = 0; i < accounts.length; i++) {
-			if(accounts[i].getAccountNumber() == accNumber)
+			if(accounts[i] != null && accounts[i].getAccountNumber() == accNumber)
 				return true;
 		}
 		return false;
